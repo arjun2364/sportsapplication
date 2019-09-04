@@ -1,0 +1,29 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model IEnumerable<ApplicationUser>
+@{
+    ViewData["Title"] = "AtheleteList";
+}
+
+<h1>AtheleteList</h1>
+<a class="btn btn-primary" asp-controller="Athelete" asp-action="AddAthelete">Add New Athelte</a>
+<br/>
+<br/>
+<div>
+    <p><b>Default Password</b> : User Name in Capital+"athelte@123"</p>
+</div>
+@foreach (var item in Model)
+{
+        <div class="card mb-3">
+            <div class="card-body">
+                Name : <h5 class="card-title">@item.FirstName @item.LastName</h5>
+                User Name : <h5 class="card-title">@item.UserName</h5>
+                Email : <h5 class="card-title">@item.Email</h5>
+            </div>
+            <div class="card-footer">
+                <a asp-controller="Athelete" asp-action="DeleteAthelete"
+                   asp-route-Id="@item.Id" class="btn btn-danger">
+                    Delete
+                </a>
+            </div>
+        </div>
+ }

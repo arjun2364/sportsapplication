@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@model IEnumerable<Sports_Application.Models.Test>
+
+
+<a class="btn btn-primary" asp-controller="Test" asp-action="CreateTest">Create New Test</a>
+<a class="btn btn-primary" asp-controller="Athelete" asp-action="AtheleteList">AtheleteList</a>
+<br />
+<br />
+<table class="table" border="0">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Number of participants</th>
+            <th>Test type</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Date.ToShortDateString()</td>
+                <td>@item.Count</td>
+                <td><a asp-controller="Result" asp-action="ViewResult" asp-route-TestId="@item.Id">@item.TestType</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+

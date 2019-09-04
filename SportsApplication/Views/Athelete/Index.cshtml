@@ -1,0 +1,29 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+@model List<AtheleteViewModel>
+
+<table class="table" border="0">
+    <thead>
+        <tr>
+            <th>Test Name</th>
+            <th>Coach Name</th>
+            <th>Date</th>
+            <th>Score</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>@item.TestName</td>
+            <td>@item.CoachName</td>
+            <td>@item.Date.ToShortDateString()</td>
+            <td>@item.Data</td>
+        </tr>
+        }
+    </tbody>
+</table>
+

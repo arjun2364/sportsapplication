@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["Title"] = "ADD NEW ATHELETE";
+}
+
+@model SportsApplication.Models.CreateResultModel
+
+<form method="post">
+    <div class="form-signin">
+        <h2 class="form-signin-heading">ADD NEW ATHELETE TO TEST</h2>
+        <div class="form-group">
+            <input type="hidden" asp-for="@Model.TestId" class="form-control" />
+
+            <label asp-for="@Model.UserId"></label>
+            <select asp-for="@Model.UserId" class="form-control">
+                <option value="-1" selected disabled>Choose</option>
+                @foreach (var item in Model.AtheleteList)
+                {
+
+                    <option value="@item.id">@item.name</option>
+                }
+            </select>
+            <span asp-validation-for="@Model.UserId" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="@Model.Data"></label>
+        <input type="number" asp-for="@Model.Data" class="form-control" />
+        <span class="text-danger" asp-validation-for="@Model.Data"></span>
+    </div>
+    <button type="submit" class="btn btn-primary" asp-route-Test=@Model>Save</button>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+@if (@ViewBag.message != null)
+{
+    <div class="alert alert-info">@ViewBag.message</div>
+}
