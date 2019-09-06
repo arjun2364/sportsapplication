@@ -12,6 +12,8 @@ using SportsApplication.Models;
 
 namespace SportsApplication.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class HomeController : Controller
     {
         private readonly IUnitOfWork unitOfWork;
@@ -21,20 +23,22 @@ namespace SportsApplication.Controllers
             this.unitOfWork = unitOfWork;
         }
 
-        
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        [Route("TestData")]
+        public IEnumerable<Test> TestData()
         {
             var Tests = unitOfWork.Data.GetAllTestData();
-            var user = await unitOfWork.Data.GetUserAsync(HttpContext.User);
-            bool isCoach = await unitOfWork.Data.IsInRoleAsync(user, "Coach");
-            if (isCoach)
-            {
-                return View(unitOfWork.Data.GetTests(user.Id));
-            }
-            else
-            {
-                return RedirectToAction("Index", "Athelete", user.Id);
-            }
+            return Tests;
+            //var user = await unitOfWork.Data.GetUserAsync(HttpContext.User);
+            //bool isCoach = await unitOfWork.Data.IsInRoleAsync(user, "Coach");
+            //if (isCoach)
+            //{
+            //    return View(unitOfWork.Data.GetTests(user.Id));
+            //}
+            //else
+            //{
+            //    return RedirectToAction("Index", "Athelete", user.Id);
+            //}
             
         }
 

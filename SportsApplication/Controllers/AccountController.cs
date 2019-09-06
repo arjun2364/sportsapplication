@@ -47,21 +47,11 @@ namespace SportsApplication.Controllers
         }
 
         [HttpGet]
-        [Route("Lo")]
+        [Route("UserProfile")]
         //[AllowAnonymous]
-        public bool Register()
+        public string UserProfile()
         {
-            //if (User.Identity.IsAuthenticated)
-            //{
-
-            //    return RedirectToAction("Index", "Home");
-
-            //}
-            //else
-            //{
-            //    return View();
-            //}
-            return true;
+            return "hello";
         }
 
         [HttpPost]
@@ -138,8 +128,7 @@ namespace SportsApplication.Controllers
 
 
                     bool isCoach = await unitOfWork.Data.IsInRoleAsync(LoggedInUser, "Coach");
-                    if (isCoach)
-                    {
+                    
                         var tokenDescriptor = new SecurityTokenDescriptor
                         {
                             Subject = new ClaimsIdentity(new Claim[]
@@ -152,23 +141,13 @@ namespace SportsApplication.Controllers
                         var tokenHandler = new JwtSecurityTokenHandler();
                         var securityToken = tokenHandler.CreateToken(tokenDescriptor);
                         var token = tokenHandler.WriteToken(securityToken);
-                        return Ok(new { token });
+                    if (isCoach)
+                    {
+                        return Ok(new { token, role ="Coach" });
                     }
                     else
                     {
-                        var tokenDescriptor = new SecurityTokenDescriptor
-                        {
-                            Subject = new ClaimsIdentity(new Claim[]
-                             {
-                                     new Claim("UserID", LoggedInUser.Id.ToString())
-                             }),
-                            Expires = DateTime.UtcNow.AddDays(1),
-                            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appSettings.Value.JWT_Secret)), SecurityAlgorithms.HmacSha256Signature)
-                        };
-                        var tokenHandler = new JwtSecurityTokenHandler();
-                        var securityToken = tokenHandler.CreateToken(tokenDescriptor);
-                        var token = tokenHandler.WriteToken(securityToken);
-                        return Ok(new { token });
+                        return Ok(new { token, role = "Athelete" });
                     }
 
                 }

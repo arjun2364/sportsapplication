@@ -10,6 +10,8 @@ using SportsApplication.Models;
 
 namespace SportsApplication.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class TestController : Controller
     {
 
@@ -36,13 +38,14 @@ namespace SportsApplication.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Coach")]
+        [Authorize]
+        [Route("createTest")]
         public IActionResult CreateTest(Test test)
         {
 
             unitOfWork.Data.AddTest(test);
             unitOfWork.Commit();
-            return RedirectToAction("Index", "Home");
+            return Ok(new { test }); 
             
             
         }
