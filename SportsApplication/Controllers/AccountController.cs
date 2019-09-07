@@ -143,11 +143,11 @@ namespace SportsApplication.Controllers
                         var token = tokenHandler.WriteToken(securityToken);
                     if (isCoach)
                     {
-                        return Ok(new { token, role ="Coach" });
+                        return Ok(new { token, Id = LoggedInUser.Id.ToString(), Role="Coach" });
                     }
                     else
                     {
-                        return Ok(new { token, role = "Athelete" });
+                        return Ok(new { token, Id=LoggedInUser.Id.ToString(), Role = "Athelete" });
                     }
 
                 }

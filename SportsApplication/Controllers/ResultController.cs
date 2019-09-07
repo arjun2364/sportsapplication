@@ -9,6 +9,8 @@ using SportsApplication.Models;
 
 namespace SportsApplication.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class ResultController : Controller
     {
         private readonly IUnitOfWork unitOfWork;
@@ -17,8 +19,10 @@ namespace SportsApplication.Controllers
         {
             this.unitOfWork = unitOfWork;
         }
-        [Authorize(Roles = "Coach")]
-        public IActionResult ViewResult(int TestId)
+
+        [HttpGet("{TestId:int}")]
+        [Route("editTest/{TestId}")]
+        public object ViewResult(int TestId)
         {
 
             var test = unitOfWork.Data.GetTestByid(TestId);
@@ -29,7 +33,7 @@ namespace SportsApplication.Controllers
                 TestId = TestId,
                 AtheleteNames = unitOfWork.Data.GetAtheleteNamesWithDataByTestId(TestId)
             };
-            return View(obj);
+            return Ok(obj);
         }
         [Authorize(Roles = "Coach")]
         public async Task<IActionResult> CreateResult(int TestId)
@@ -71,8 +75,9 @@ namespace SportsApplication.Controllers
             
         }
 
-        [Authorize(Roles = "Coach")]
-        public async Task<IActionResult> EditResult(int Id)
+        [HttpGet("{Id:int}")]
+        [Route("editResult/{Id}")]
+        public async Task<object> EditResult(int Id)
         {
             var result = unitOfWork.Data.GetResultById(Id);
             var atheletes = unitOfWork.Data.GetAtheleteNamesWithDataByTestId(result.TestId);
@@ -84,7 +89,7 @@ namespace SportsApplication.Controllers
                 Id = result.Id,
                 AtheleteList = await unitOfWork.Data.GetAllAtheleteList()
             };
-            return View(ResultModel);
+            return Ok(ResultModel);
         }
 
         [HttpPost]

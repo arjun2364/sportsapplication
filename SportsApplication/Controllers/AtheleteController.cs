@@ -10,6 +10,8 @@ using SportsApplication.Models;
 
 namespace SportsApplication.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class AtheleteController : Controller
     {
         private readonly IUnitOfWork unitOfWork;
@@ -28,15 +30,18 @@ namespace SportsApplication.Controllers
         }
         
         [HttpGet]
-        [Authorize(Roles = "Coach")]
-        public async Task<IActionResult> AtheleteList()
+        [Route("AtheleteList")]
+        //[Authorize(Roles = "Coach")]
+        public async Task<object> AtheleteList()
         {
             var users = await unitOfWork.Data.GetUsersInRoleAsync("Athelete");
-            return View(users);
+            return Ok( users);
         }
 
-        [Authorize(Roles = "Coach")]
-        public async Task<IActionResult> DeleteAthelete(string Id)
+        //[Authorize(Roles = "Coach")]
+        [HttpDelete("{Id}")]
+        //[Route("deleteAthelete")]
+        public async Task<object> DeleteAthelete(string Id)
         {
             var user = await unitOfWork.Data.FindByIdAsync(Id);
             var rolesForUser = await unitOfWork.Data.GetRolesAsync(user);
@@ -50,7 +55,7 @@ namespace SportsApplication.Controllers
 
             await unitOfWork.Data.DeleteAsync(user);
             unitOfWork.Commit();
-            return RedirectToAction("AtheleteList");
+            return Ok(user);
         }
 
         [Authorize(Roles = "Coach")]
@@ -60,8 +65,9 @@ namespace SportsApplication.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Coach")]
-        public async Task<IActionResult> AddAthelete(RegisterViewModel model)
+        //[Authorize(Roles = "Coach")]
+        [Route("addNewAthelete")]
+        public async Task<Object> AddAthelete(RegisterViewModel model)
         {
             model.Password = model.UserName.ToUpper() + "athelete" + "@123";
             model.ConfirmPassword = model.Password;
@@ -99,7 +105,7 @@ namespace SportsApplication.Controllers
                 }
             }
 
-            return View(model);
+            return Ok(model);
         }
     }
 }
