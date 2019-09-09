@@ -35,20 +35,22 @@ namespace SportsApplication.Controllers
             };
             return Ok(obj);
         }
-        [Authorize(Roles = "Coach")]
-        public async Task<IActionResult> CreateResult(int TestId)
+       
+        [HttpGet]
+        [Route("addAthelete/{id}")]
+        public async Task<object> CreateResult(int TestId)
         {
             var resultmodel = new CreateResultModel
             {
                 TestId = TestId,
                 AtheleteList = await unitOfWork.Data.GetAllAtheleteList()
             };
-            return View(resultmodel);
+            return Ok(resultmodel);
         }
 
         [HttpPost]
-        [Authorize(Roles = "Coach")]
-        public async Task<IActionResult> CreateResult(CreateResultModel resultmodel)
+        [Route("addAthelete")]
+        public async Task<object> CreateResult(CreateResultModel resultmodel)
         {
             Result result = new Result
             {
@@ -62,15 +64,15 @@ namespace SportsApplication.Controllers
             int status = unitOfWork.Data.AddResult(result);
             if(status==0)
             {
-                ViewBag.message = "Athelete already exists";
-                return View(resultmodel);
+                 return Conflict(new { message = $"Athelete already exists"});
             }
             else
             {
 
                 unitOfWork.Data.IncrementCountByTestId(resultmodel.TestId);
                 unitOfWork.Commit();
-                return RedirectToAction("ViewResult", "Result", new { testid = resultmodel.TestId });
+                //"ViewResult", "Result", new { testid = resultmodel.TestId }
+                return Ok();
             }
             
         }
@@ -93,41 +95,41 @@ namespace SportsApplication.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Coach")]
-        public async Task<IActionResult> EditResult(CreateResultModel ResultModel)
+        [Route("updateResult")]
+        public async Task<object> EditResult(CreateResultModel resultmodel)
         {
-            ResultModel.AtheleteList = await unitOfWork.Data.GetAllAtheleteList();
             Result result = new Result
             {
-                Id = ResultModel.Id,
-                TestId = ResultModel.TestId,
-                Data = ResultModel.Data,
-                UserId = ResultModel.UserId
+
+                Id = resultmodel.Id,
+                TestId = resultmodel.TestId,
+                Data = resultmodel.Data,
+                UserId = resultmodel.UserId
             };
-            int status = unitOfWork.Data.Update(result);
-            if (status==0)
+            resultmodel.AtheleteList = await unitOfWork.Data.GetAllAtheleteList();
+            int status = unitOfWork.Data.AddResult(result);
+            if (status == 0)
             {
                 ViewBag.message = "Athelete already exists";
-                return View(ResultModel);
+                return View(resultmodel);
             }
             else
             {
 
+                unitOfWork.Data.IncrementCountByTestId(resultmodel.TestId);
                 unitOfWork.Commit();
-                return RedirectToAction("ViewResult", "Result", new { testid = ResultModel.TestId });
+                return RedirectToAction("ViewResult", "Result", new { testid = resultmodel.TestId });
             }
-            
-           
-            
         }
 
-        [Authorize(Roles = "Coach")]
-        public IActionResult DeleteResult(int Id,int TestId)
+        [HttpDelete]
+        [Route("deleteResult/{Id}/{TestId}")]
+        public Object DeleteResult(int Id,int TestId)
         {
             unitOfWork.Data.DeleteTestResultById(Id);
             unitOfWork.Data.DecrementCountByTestId(TestId);
             unitOfWork.Commit();
-            return RedirectToAction("Index", "Home");
+            return Ok();
         }
         [Authorize(Roles = "Coach")]
         public IActionResult ConfirmDeleteResult(int Id)

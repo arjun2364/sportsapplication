@@ -88,7 +88,7 @@ namespace Sports_Application.Models
             var query = from r in db.Results
                         where r.TestId.Equals(result.TestId) && r.UserId.Equals(result.UserId)
                         select r;
-            if(query.FirstOrDefault() == null)
+            if (query.FirstOrDefault() == null)
             {
                 db.Results.Add(result);
                 return 1;
@@ -97,8 +97,8 @@ namespace Sports_Application.Models
             {
                 return 0;
             }
-            
-            
+
+
         }
 
         public Test GetTestByid(int id)

@@ -50,12 +50,13 @@ namespace SportsApplication.Controllers
             
         }
 
-        [Authorize(Roles = "Coach")]
-        public IActionResult DeleteTest(int Id)
+        //[Authorize(Roles = "Coach")]
+        [Route("deleteTest/{Id}")]
+        public object DeleteTest(int Id)
         {
             unitOfWork.Data.DeleteTestByTestid(Id);
             unitOfWork.Commit();
-            return RedirectToAction("Index", "Home");
+            return Ok();
         }
 
         [Authorize(Roles = "Coach")]
