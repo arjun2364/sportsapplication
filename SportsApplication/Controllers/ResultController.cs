@@ -64,7 +64,7 @@ namespace SportsApplication.Controllers
             int status = unitOfWork.Data.AddResult(result);
             if(status==0)
             {
-                 return Conflict(new { message = $"Athelete already exists"});
+                 return Ok(new { status});
             }
             else
             {
@@ -72,7 +72,7 @@ namespace SportsApplication.Controllers
                 unitOfWork.Data.IncrementCountByTestId(resultmodel.TestId);
                 unitOfWork.Commit();
                 //"ViewResult", "Result", new { testid = resultmodel.TestId }
-                return Ok();
+                return Ok(new { status });
             }
             
         }
@@ -98,6 +98,7 @@ namespace SportsApplication.Controllers
         [Route("updateResult")]
         public async Task<object> EditResult(CreateResultModel resultmodel)
         {
+            resultmodel.AtheleteList = await unitOfWork.Data.GetAllAtheleteList();
             Result result = new Result
             {
 
@@ -106,19 +107,17 @@ namespace SportsApplication.Controllers
                 Data = resultmodel.Data,
                 UserId = resultmodel.UserId
             };
-            resultmodel.AtheleteList = await unitOfWork.Data.GetAllAtheleteList();
-            int status = unitOfWork.Data.AddResult(result);
+            
+            int status = unitOfWork.Data.Update(result);
             if (status == 0)
             {
                 ViewBag.message = "Athelete already exists";
-                return View(resultmodel);
+                return Ok(new { status });
             }
             else
             {
-
-                unitOfWork.Data.IncrementCountByTestId(resultmodel.TestId);
                 unitOfWork.Commit();
-                return RedirectToAction("ViewResult", "Result", new { testid = resultmodel.TestId });
+                return Ok(new { status });
             }
         }
 

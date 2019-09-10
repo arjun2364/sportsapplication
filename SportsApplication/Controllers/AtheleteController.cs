@@ -21,12 +21,12 @@ namespace SportsApplication.Controllers
             this.unitOfWork = unitOfWork;
         }
 
-        [HttpGet]
-        [Authorize(Roles ="Athelete")]
-        public IActionResult Index(string Id)
+        [HttpGet("{Id}")]
+        [Route("atheleteData/{Id}")]
+        public object Index(string Id)
         {
             List<AtheleteViewModel> li= unitOfWork.Data.GetAtheleteData(Id);
-            return View(li);
+            return Ok(li);
         }
         
         [HttpGet]
